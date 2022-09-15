@@ -1,0 +1,16 @@
+#stickerContainer {
+    position: relative;
+}
+
+.sticker {
+    position:absolute;
+    width: 200px;
+    min-height: 100px;
+    background-color: thistle;
+    border-radius: 5px;
+    border: 1px solid gray;
+}
+
+.draggable:hover {
+    cursor: pointer;
+}
