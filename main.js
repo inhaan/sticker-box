@@ -1,3 +1,7 @@
+//TODO
+//파일로 로직 분리하고
+//이벤트 위임하기
+
 document.addEventListener("DOMContentLoaded", () => {
     document.querySelector("#btnCreateSticker").onclick = onClickBtnCreateSticker;
 });
@@ -10,23 +14,65 @@ function onClickBtnCreateSticker() {
 function createSticker() {
     createSticker._stickerTop = (createSticker._stickerTop ?? 0) + 10;
     createSticker._stickerLeft = (createSticker._stickerLeft ?? 0) + 10;
+    createSticker._titleIndex = (createSticker._titleIndex ?? 0) + 1;
 
-    const divEl = document.createElement("div");
-    divEl.className = "sticker draggable";
-    divEl.style.top = `${createSticker._stickerTop}px`;
-    divEl.style.left = `${createSticker._stickerLeft}px`;
+    const stickerEl = document.createElement("div");
+    stickerEl.className = "sticker draggable";
+    stickerEl.style.top = `${createSticker._stickerTop}px`;
+    stickerEl.style.left = `${createSticker._stickerLeft}px`;
 
-    divEl.innerHTML = `
-        
-    `;
+    const titleEl = document.createElement("div");
+    titleEl.textContent = `Sticker${createSticker._titleIndex}`;
+    stickerEl.append(titleEl);
 
-    makeDraggable(divEl);
+    const btnAddItemEl = document.createElement("button");
+    btnAddItemEl.textContent = "항목 추가";
+    stickerEl.append(btnAddItemEl);
 
-    return divEl;
+    const btnDelStickerEl = document.createElement("button");
+    btnDelStickerEl.textContent = "스티커 삭제";
+    btnDelStickerEl.onclick = onClickBtnDelSticker.bind(null, stickerEl);
+    stickerEl.append(btnDelStickerEl);
+
+    const itemContainerEl = document.createElement("ul");
+    itemContainerEl.className = "item-container";
+    stickerEl.append(itemContainerEl);
+
+    btnAddItemEl.onclick = onClickBtnAddItem.bind(null, itemContainerEl);
+
+    makeDraggable(stickerEl);
+
+    return stickerEl;
+}
+
+function onClickBtnAddItem(itemContainerEl) {
+    itemContainerEl.append(createItem());
+}
+
+function onClickBtnDelItem(itemEl) {
+    itemEl.remove();
+}
+
+function onClickBtnDelSticker(stickerEl) {
+    stickerEl.remove();
+}
+
+function createItem() {
+    const itemEl = document.createElement("li");
+    itemEl.className = "item";
+    itemEl.textContent = "sample text...";
+
+    const btnDelItemEl = document.createElement("button");
+    btnDelItemEl.textContent = "삭제";
+    btnDelItemEl.onclick = onClickBtnDelItem.bind(null, itemEl);
+    itemEl.append(btnDelItemEl);
+
+    makeDraggable(itemEl);
+
+    return itemEl;
 }
 
 function makeDraggable(el) {
-    //
     el.onmousedown = function (event) {
         const shiftX = event.clientX - el.getBoundingClientRect().left;
         const shiftY = event.clientY - el.getBoundingClientRect().top;
@@ -58,6 +104,8 @@ function makeDraggable(el) {
             el.style.zIndex = originalZIndex;
             el.onmouseup = null;
         };
+
+        event.stopPropagation();
     };
 
     el.ondragstart = function () {

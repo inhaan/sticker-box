@@ -3,14 +3,24 @@
 }
 
 .sticker {
-    position:absolute;
-    width: 200px;
+    position: absolute;
+    width: 300px;
     min-height: 100px;
     background-color: thistle;
-    border-radius: 5px;
-    border: 1px solid gray;
+    padding: 1rem;
 }
 
 .draggable:hover {
     cursor: pointer;
+}
+
+.item-container {
+    list-style-type: none;
+    padding: 0 1rem;
+}
+
+.item-container .item {
+    background-color: #eee;
+    margin: 0.3rem 0;
+    padding: 0.5rem;
 }
