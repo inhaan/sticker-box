@@ -5,8 +5,7 @@
 .sticker {
     position: absolute;
     width: 300px;
-    min-height: 100px;
-    background-color: thistle;
+    background-color: seagreen;
     padding: 1rem;
 }
 
@@ -16,11 +15,27 @@
 
 .item-container {
     list-style-type: none;
-    padding: 0 1rem;
+    padding: 0.5rem 1rem;
+    min-height: 20px;
+    margin: 0;
 }
 
-.item-container .item {
+.item {
     background-color: #eee;
     margin: 0.3rem 0;
-    padding: 0.5rem;
+    padding: 10px;
+}
+
+.item.ghost {
+    position: absolute;
+    margin: 0;
+}
+
+.placeholder {
+    margin: 0.3rem 0;
+    background-color: rgba(100, 100, 100, 0.3);
+}
+
+.hidden {
+    display: none;
 }
