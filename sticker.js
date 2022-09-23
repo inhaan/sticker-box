@@ -90,13 +90,13 @@ function makeDraggableSticker(el) {
         document.addEventListener("mousemove", onMouseMove);
 
         //drop
-        el.onmouseup = () => {
+        document.addEventListener("mouseup", () => {
             document.removeEventListener("mousemove", onMouseMove);
             el.onmouseup = null;
 
             //텍스트 선택 방지 해제
             document.body.classList.remove("noselect");
-        };
+        });
     };
 }
 
