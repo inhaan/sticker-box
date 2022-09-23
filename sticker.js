@@ -3,7 +3,6 @@ import { createItem } from "./stickerItem.js";
 let _stickerTop = 0;
 let _stickerLeft = 0;
 let _titleIndex = 0;
-
 let _stickerZIndex = 1;
 
 export function createSticker() {
@@ -28,14 +27,14 @@ export function createSticker() {
 
     const btnDelStickerEl = document.createElement("button");
     btnDelStickerEl.textContent = "스티커 삭제";
-    btnDelStickerEl.onclick = onClickBtnDelSticker.bind(null, stickerEl);
+    btnDelStickerEl.onclick = () => onClickBtnDelSticker(stickerEl);
     stickerEl.append(btnDelStickerEl);
 
     const itemContainerEl = document.createElement("ul");
     itemContainerEl.className = "item-container droppable";
     stickerEl.append(itemContainerEl);
 
-    btnAddItemEl.onclick = onClickBtnAddItem.bind(null, itemContainerEl);
+    btnAddItemEl.onclick = () => onClickBtnAddItem(itemContainerEl);
 
     makeDraggableSticker(stickerEl);
 
@@ -60,34 +59,48 @@ function getRandomBackgroundColor() {
 }
 
 function makeDraggableSticker(el) {
+    el.ondragstart = () => false;
+
     el.onmousedown = function (event) {
-        const shiftX = event.clientX - el.getBoundingClientRect().left;
-        const shiftY = event.clientY - el.getBoundingClientRect().top;
+        //텍스트 선택 방지
+        document.body.classList.add("noselect");
+
+        //맨 위로 올리기
+        el.style.zIndex = getStickerZIndex();
+
+        //초기값 계산
+        const clientRect = el.getBoundingClientRect();
+        const shiftX = event.clientX - clientRect.left;
+        const shiftY = event.clientY - clientRect.top;
         const parentLeft = event.clientX - el.offsetLeft - shiftX;
         const parentTop = event.clientY - el.offsetTop - shiftY;
 
-        el.style.zIndex = getStickerZIndex();
-
-        moveAt(event.pageX, event.pageY);
-
-        function moveAt(pageX, pageY) {
-            el.style.left = pageX - parentLeft - shiftX + "px";
-            el.style.top = pageY - parentTop - shiftY + "px";
-        }
-
-        function onMouseMove(event) {
-            moveAt(event.pageX, event.pageY);
-        }
-
+        //drag
+        const onMouseMove = (event) => {
+            moveAt({
+                el,
+                pageX: event.pageX,
+                pageY: event.pageY,
+                shiftX,
+                shiftY,
+                parentLeft,
+                parentTop,
+            });
+        };
         document.addEventListener("mousemove", onMouseMove);
 
-        el.onmouseup = function () {
+        //drop
+        el.onmouseup = () => {
             document.removeEventListener("mousemove", onMouseMove);
             el.onmouseup = null;
+
+            //텍스트 선택 방지 해제
+            document.body.classList.remove("noselect");
         };
     };
+}
 
-    el.ondragstart = function () {
-        return false;
-    };
+function moveAt({ el, pageX, pageY, shiftX, shiftY, parentLeft, parentTop }) {
+    el.style.left = pageX - parentLeft - shiftX + "px";
+    el.style.top = pageY - parentTop - shiftY + "px";
 }
