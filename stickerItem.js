@@ -69,9 +69,10 @@ function makeDraggableItem(el) {
         document.addEventListener("mousemove", mouseMoveHandler);
 
         //ghostEl drop
-        document.addEventListener("mouseup", () => {
+        const onMoseUp = () => {
             //ghoseEl 제거
             document.removeEventListener("mousemove", mouseMoveHandler);
+            document.removeEventListener("mouseup", onMoseUp);
             ghostEl.remove();
 
             //항목 이동 후 placehoderEl 제거
@@ -81,7 +82,8 @@ function makeDraggableItem(el) {
 
             //텍스트 선택 방지 해제
             document.body.classList.remove("noselect");
-        });
+        };
+        document.addEventListener("mouseup", onMoseUp);
 
         //버블링 중단
         event.stopPropagation();
